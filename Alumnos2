@@ -1,0 +1,208 @@
+package Conexion;
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.awt.event.ActionEvent;
+import javax.swing.JTextField;
+import javax.swing.JLabel;
+import java.awt.Font;
+
+public class Alumnos2 extends JFrame {
+	
+	private void limpiarCajas(){
+		textId.setText(null);
+		textNombre.setText(null);;
+		textApellido.setText(null);;
+		textDirección.setText(null);;
+		textFecha_nacimiento.setText(null);
+		
+	}
+		Conexion con=new Conexion();	 
+
+	private JPanel content;
+	private JTextField textId;
+	private JTextField textNombre;
+	private JTextField textApellido;
+	private JTextField textDirección;
+	private JTextField textFecha_nacimiento;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Alumnos2 frame = new Alumnos2();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	
+	
+	
+	public Alumnos2() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 562, 300);
+		content = new JPanel();
+		content.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		setContentPane(content);
+		content.setLayout(null);
+		JButton btnInsert = new JButton("Insert");
+		btnInsert.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				con.Id=textId.getText();
+				con.Nombre=textNombre.getText();
+				con.Apellido=textApellido.getText();
+				con.Dirección=textDirección.getText();
+				con.Fecha_nacimiento=textFecha_nacimiento.getText();
+				con.InsertarAlumno();
+				limpiarCajas();
+			}
+				
+		});
+		JButton btnSelect = new JButton("Select");
+		btnSelect.addActionListener(new ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				con.Id=textId.getText();
+				con.SeleccionarAlumno();
+				textNombre.setText(con.Nombre);
+				textApellido.setText(con.Apellido);
+				textDirección.setText(con.Dirección);
+				textFecha_nacimiento.setText(con.Fecha_nacimiento);
+				
+			}
+		});
+		
+		JButton btnUpdate = new JButton("Update");
+		btnUpdate.addActionListener(new ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				con.Id=textId.getText();
+				con.Nombre=textNombre.getText();
+				con.Apellido=textApellido.getText();
+				con.Dirección=textDirección.getText();
+				con.Fecha_nacimiento=textFecha_nacimiento.getText();
+				con.ActualizarAlumno();
+				limpiarCajas();
+
+			}
+		});
+		btnUpdate.setBounds(412, 114, 85, 21);
+		content.add(btnUpdate);
+		
+		JButton btnDelete = new JButton("Delete");
+		btnDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				con.Id=textId.getText();
+				con.EliminarAlumno();
+				limpiarCajas();
+
+			}
+		});
+		btnDelete.setBounds(412, 145, 85, 21);
+		content.add(btnDelete);
+		
+		JButton btnExit = new JButton("Exit");
+		btnExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				System.exit(0);
+			}
+			
+		});
+		JButton btnClean = new JButton("Clean");
+		btnClean.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				limpiarCajas();
+
+			}
+		});
+		
+		btnExit.setBounds(412, 212, 85, 21);
+		content.add(btnExit);
+		
+		
+		btnSelect.setBounds(412, 83, 85, 21);
+		content.add(btnSelect);
+		
+	
+		btnInsert.setBounds(412, 52, 85, 21);
+		content.add(btnInsert);
+		
+		textId = new JTextField();
+		textId.setBounds(186, 53, 165, 19);
+		content.add(textId);
+		textId.setColumns(10);
+		
+		textNombre = new JTextField();
+		textNombre.setBounds(186, 84, 165, 19);
+		content.add(textNombre);
+		textNombre.setColumns(10);
+		
+		textApellido = new JTextField();
+		textApellido.setBounds(186, 115, 165, 19);
+		content.add(textApellido);
+		textApellido.setColumns(10);
+		
+		textDirección = new JTextField();
+		textDirección.setBounds(186, 146, 165, 19);
+		content.add(textDirección);
+		textDirección.setColumns(10);
+		
+		textFecha_nacimiento = new JTextField();
+		textFecha_nacimiento.setBounds(186, 177, 165, 19);
+		content.add(textFecha_nacimiento);
+		textFecha_nacimiento.setColumns(10);
+		
+		JLabel lblId = new JLabel("Id");
+		lblId.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblId.setBounds(52, 55, 82, 13);
+		content.add(lblId);
+		
+		JLabel lblNombre = new JLabel("Nombre");
+		lblNombre.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblNombre.setBounds(52, 86, 82, 13);
+		content.add(lblNombre);
+		
+		JLabel lblApellido = new JLabel("Apellido");
+		lblApellido.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblApellido.setBounds(52, 117, 82, 13);
+		content.add(lblApellido);
+		
+		JLabel lblDirección = new JLabel("Dirección");
+		lblDirección.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblDirección.setBounds(52, 148, 82, 13);
+		content.add(lblDirección);
+		
+		JLabel lblFecha_nacimiento = new JLabel("Fecha de Nacimiento");
+		lblFecha_nacimiento.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblFecha_nacimiento.setBounds(52, 179, 144, 13);
+		content.add(lblFecha_nacimiento);
+		
+		JLabel lblNewLabel = new JLabel("ALUMNOS");
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblNewLabel.setBounds(228, 10, 75, 21);
+		content.add(lblNewLabel);
+		
+		
+		btnClean.setBounds(412, 181, 85, 21);
+		content.add(btnClean);
+	}
+}
