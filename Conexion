@@ -1,0 +1,140 @@
+package Conexion;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+
+public class Conexion {
+	
+	
+	Connection conexion=null;
+	String usuario="sa";
+	String contraseña="123";
+	String db= "Escuela1";
+	String puerto="1433";
+	
+	String Id;
+	String Nombre;
+	String Apellido;
+	String Dirección;
+	String Fecha_nacimiento;
+	String Fecha_Nacimiento;
+	String Nivel_Academico;
+	String Nombre_asignatura;
+	
+	public Connection obtenerConexion() {
+		try {
+			String cadena="jdbc:sqlserver://DESKTOP-VIIC3CE:"+ puerto+";"+"databaseName="+db;
+			conexion=DriverManager.getConnection(cadena,usuario, contraseña);
+			JOptionPane.showMessageDialog(null,"Conexión exitosa");
+		}catch (Exception e) {
+			System.out.printf("Error: "+e.toString());
+		}
+		return conexion;
+	}
+	
+	//TABLA ALUMNO
+	//Insertar
+	public PreparedStatement InsertarAlumno() {
+		Conexion op = new Conexion();
+		Connection cn=null;
+		PreparedStatement ps=null;
+        try {
+            cn = op.obtenerConexion();
+            String insert="Insert into Alumnos values(?,?,?,?,?)";
+			ps=cn.prepareStatement(insert);
+            ps.setString(1, Id);
+            ps.setString(2, Nombre);
+            ps.setString(3, Apellido);
+            ps.setString(4, Dirección);
+            ps.setString(5, Fecha_nacimiento);
+
+            ps.executeUpdate();
+            System.out.println("Registro Insertado ");
+            JOptionPane.showMessageDialog(null, "Registro Agregado");
+			
+			}catch(Exception e){
+			System.out.println("Error de registro");
+			e.printStackTrace();
+		}
+		return ps;
+	}
+	//Seleccionar
+	public PreparedStatement SeleccionarAlumno() {
+		Conexion op = new Conexion();
+		Connection cn=null;
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+        try {
+            cn = op.obtenerConexion();
+            String select="Select * from Alumnos where Id=?";
+			ps=cn.prepareStatement(select);
+            ps.setString(1, Id);
+            rs=ps.executeQuery();
+            
+            if(rs.next()) {
+            	Id=rs.getString(1);
+            	Nombre=rs.getString(2);
+            	Apellido=rs.getString(3);
+            	Dirección=rs.getString(4);
+            	Fecha_nacimiento=rs.getString(5);
+            }else {
+                JOptionPane.showMessageDialog(null, "Error,verifica el Id");
+            }
+			}catch(Exception e){
+			System.out.println("Error al consultar");
+			e.printStackTrace();
+		}
+		return ps;
+	}
+	//Actualizar
+	public PreparedStatement ActualizarAlumno() {
+		Conexion op = new Conexion();
+		Connection cn=null;
+		PreparedStatement ps=null;
+		try {
+			 cn = op.obtenerConexion();
+	            String update="UPDATE Alumnos SET Nombre=?,Apellido=?,Dirección=?, Fecha_nacimiento=? where Id=?";
+				ps=cn.prepareStatement(update);
+		            ps.setString(1, Nombre);
+		            ps.setString(2, Apellido);
+		            ps.setString(3, Dirección);
+		            ps.setString(4, Fecha_nacimiento);
+		            ps.setString(5, Id);
+
+
+	            ps.executeUpdate();
+	            System.out.println("Registro actualizado");
+				JOptionPane.showMessageDialog(null, "Registro Actualizado");
+		}catch(Exception e) {
+			System.out.println("Error de actualizacion");
+			e.printStackTrace();
+		} return ps;	
+		}
+	//Eliminar
+	public PreparedStatement EliminarAlumno() {
+		Conexion op = new Conexion();
+		Connection cn=null;
+		PreparedStatement ps=null;
+		
+		try {
+			 cn = op.obtenerConexion();
+			 String delete="Delete from Alumnos where id=?";
+			ps=cn.prepareStatement(delete);
+			ps.setString(1, Id);
+			int res= ps.executeUpdate();
+			if(res>0) {
+				JOptionPane.showMessageDialog(null, "Registro Eliminado");
+			} else {
+				JOptionPane.showMessageDialog(null, "Error al borrar registro");
+			}
+		cn.close();
+			
+		}catch(Exception e) {
+			System.out.println("Error al eliminar");
+			e.printStackTrace();
+		}return ps;
+	}
+  }
